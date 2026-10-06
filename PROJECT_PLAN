@@ -1,0 +1,412 @@
+Secure MCP Server - Confluence Data Integration
+
+Project Overview
+Build a secure Model Context Protocol (MCP) server that:
+
+Core Function
+Retrieves Confluence content and exposes it as MCP Resources to MCP-compatible LLM clients.
+
+Security Requirements
+	• Expose Resources only (NOT Tools)
+	• OAuth 2.1 authentication using Okta
+	• Azure Key Vault for secret management
+	• Least Privilege enforcement
+	• End-user identity propagation
+	• Trust Boundary Enforcement
+	• Audit Logging
+	• Rate Limiting
+	• Schema Validation
+	• Output Sanitization
+	
+Development Constraints
+During development:
+	• No direct connectivity to Okta
+	• No direct connectivity to Azure Key Vault
+	• No direct connectivity to Confluence
+Therefore:
+	• Mock Okta
+	• Mock Azure Key Vault
+	• Mock Confluence
+will be used during development.
+Production deployment will replace mocks with real implementations.
+
+Architecture Overview
+             +----------------+
+             |  MCP Client    |
+             | Claude/Desktop |
+             +--------+-------+
+                      |
+                      |
+              MCP Transport
+              (stdio/http)
+                      |
+                      v
+        +--------------------------+
+        |      MCP Server          |
+        +--------------------------+
+        | Auth Middleware          |
+        | Access Control Layer     |
+        | Validation Layer         |
+        | Audit Logging            |
+        | Resource Registry        |
+        +--------------------------+
+             |      |        |
+             |      |        |
+             v      v        v
+      OAuth Provider  Secret Store
+      (Okta)          (Azure KV)
+Confluence
+
+Development Mode:
+	• Mock Okta
+	• Mock Key Vault
+	• Mock Confluence
+Production Mode:
+	• Real Okta
+	• Real Azure Key Vault
+	• Real Confluence
+
+Security Principles
+Principle 1 - Resources Only
+The server exposes MCP Resources only.
+Allowed:
+	• confluence://spaces
+	• confluence://pages
+	• confluence://page/{id}
+	• confluence://search
+Not Allowed:
+	• MCP Tools
+
+Principle 2 - Least Privilege
+The MCP server must never return information that the user cannot access in Confluence.
+Requirements:
+	• User identity propagated to Confluence
+	• Authorization decision made by Confluence
+	• Audit trail maintained
+	• Server permissions narrower than source permissions if required
+
+Principle 3 - Trust Boundary Enforcement
+All inbound parameters are untrusted.
+Requirements:
+	• Strict Pydantic validation
+	• Strong typing
+	• No dynamic query construction
+	• Parameterized queries only
+	• Output validation
+	• Output sanitization
+
+Principle 4 - Secrets Management
+Never store:
+	• Passwords
+	• Tokens
+	• API Keys
+	• Certificates
+inside source code.
+Secrets must be obtained from:
+Azure Key Vault
+Development:
+Mock Key Vault
+
+Phase 0 - Connectivity Validation
+Day 1
+Step 0.1 MCP Server Bootstrap
+Goal:
+Validate MCP fundamentals before building security.
+Tasks:
+	• Install MCP SDK
+	• Create FastMCP server
+	• Create startup entry point
+	• Enable stdio transport
+	• Verify server starts correctly
+Deliverable:
+Working MCP server.
+
+Step 0.2 First Dummy Resource
+Goal:
+Validate MCP resource functionality.
+Tasks:
+Create:
+confluence://spaces
+Return hardcoded sample data.
+Deliverable:
+Client successfully reads one resource.
+
+Step 0.3 Local MCP Client Connectivity
+Goal:
+Verify client/server communication.
+Tasks:
+	• Connect local MCP client
+	• Read resource
+	• Verify responses
+Deliverable:
+Successful end-to-end communication.
+
+Phase 1 - Architecture Foundation
+Day 2
+Step 1.1 Project Structure
+Tasks:
+	• Repository structure
+	• Dependency management
+	• .env.example
+	• .gitignore
+	• Logging
+Deliverable:
+Project skeleton.
+
+Step 1.2 Interface Contracts
+Goal:
+Create interfaces before implementations.
+Interfaces:
+OAuthProvider
+SecretStore
+ConfluenceClient
+AuditLogger
+RateLimiter
+Deliverable:
+Stable contracts.
+
+Step 1.3 Configuration Layer
+Tasks:
+	• Environment variables
+	• Mock/Real service switch
+	• Central configuration
+Environment Variable:
+USE_REAL_SERVICES=false
+Deliverable:
+Config foundation.
+
+Phase 2 - Mock Infrastructure
+Day 3
+Step 2.1 Mock Okta
+Tasks:
+	• JWT generation
+	• JWKS endpoint
+	• Token validation
+Deliverable:
+Working mock OAuth provider.
+
+Step 2.2 Mock Azure Key Vault
+Tasks:
+	• In-memory storage
+	• Secret retrieval
+	• Secret rotation simulation
+Deliverable:
+Working mock Key Vault.
+
+Day 4
+Step 2.3 Mock Confluence
+Tasks:
+	• Spaces
+	• Pages
+	• Search
+Deliverable:
+Working mock Confluence API.
+
+Phase 3 - Authentication & Authorization
+Day 5
+Step 3.1 Authentication Layer
+Tasks:
+	• OAuth middleware
+	• User extraction
+	• Token validation
+Deliverable:
+Authenticated requests.
+
+Day 6
+Step 3.2 Identity Propagation
+Tasks:
+	• Context propagation
+	• User principal
+	• Async context variables
+Deliverable:
+User context available everywhere.
+
+Step 3.3 Authorization Layer
+Tasks:
+	• Resource access checks
+	• Confluence permission mapping
+	• Audit log integration
+Deliverable:
+Least privilege enforcement.
+
+Phase 4 - Resource Framework
+Day 7
+Step 4.1 Resource Registry
+Create registry for:
+	• Spaces
+	• Pages
+	• Page
+	• Search
+Deliverable:
+Centralized resource registration.
+
+Step 4.2 Pagination Framework
+Standard parameters:
+	• page
+	• page_size
+Limits:
+	• max_page_size=100
+Deliverable:
+Reusable pagination.
+
+Day 8
+Step 4.3 Resource Validation Framework
+Tasks:
+	• Input schema validation
+	• Output schema validation
+Deliverable:
+Validation middleware.
+
+Phase 5 - Confluence Resources
+Day 9
+Step 5.1 Spaces Resource
+Resource:
+confluence://spaces
+Deliverable:
+Secure resource.
+
+Day 10
+Step 5.2 Pages Resource
+Resource:
+confluence://pages
+Deliverable:
+Secure resource.
+
+Step 5.3 Page Resource
+Resource:
+confluence://page/{id}
+Deliverable:
+Secure resource.
+
+Day 11
+Step 5.4 Search Resource
+Resource:
+confluence://search
+Deliverable:
+Secure resource.
+
+Phase 6 - Security Hardening
+Day 12
+Step 6.1 Input Security
+Tasks:
+	• Input validation
+	• Sanitization
+	• Injection prevention
+Deliverable:
+Validated requests.
+
+Step 6.2 Output Security
+Tasks:
+	• Output validation
+	• Sensitive data filtering
+Prevent exposure of:
+	• passwords
+	• secrets
+	• certificates
+	• API keys
+Deliverable:
+Sanitized responses.
+
+Step 6.3 Rate Limiting
+Tasks:
+	• Request throttling
+	• Search request limits
+	• Abuse detection
+Deliverable:
+Traffic protection.
+
+Phase 7 - Observability
+Day 13
+Step 7.1 Audit Logging
+Every request stores:
+	• Timestamp
+	• User ID
+	• Resource
+	• Correlation ID
+	• Decision
+	• Duration
+Deliverable:
+Full audit trail.
+
+Step 7.2 Metrics
+Track:
+	• Resource usage
+	• Authentication failures
+	• Latency
+Deliverable:
+Operational visibility.
+
+Phase 8 - Testing
+Day 14
+Unit Tests
+Test:
+	• OAuth
+	• Authorization
+	• Validation
+	• Confluence
+	• Resources
+Coverage Target:
+80%+
+
+Security Tests
+Test:
+	• Malicious input
+	• Unauthorized access
+	• Secret leakage
+Deliverable:
+Security confidence.
+
+Phase 9 - Integration Tests
+Day 15
+End-to-End Flow
+Test:
+MCP Client → OAuth → Resource → Confluence → Response
+Deliverable:
+Production-like validation.
+
+Phase 10 - Documentation
+Day 16
+Create:
+	• README.md
+	• DEVELOPMENT.md
+	• SECURITY.md
+	• API.md
+	• DEPLOYMENT.md
+Deliverable:
+Complete documentation.
+
+Technology Stack
+Runtime:
+	• Python 3.11+
+MCP:
+	• modelcontextprotocol/python-sdk
+Authentication:
+	• Okta OAuth 2.1
+Secrets:
+	• Azure Key Vault
+Validation:
+	• Pydantic v2
+HTTP:
+	• httpx
+Testing:
+	• pytest
+	• pytest-asyncio
+	• pytest-mock
+Linting:
+	• ruff
+	• mypy
+
+Success Criteria
+✅ MCP resources working
+✅ Client connectivity established
+✅ OAuth authentication implemented
+✅ Azure Key Vault integration implemented
+✅ Confluence integration implemented
+✅ Least privilege enforced
+✅ User identity propagated
+✅ Audit logging enabled
+✅ Input validation enabled
+✅ Output sanitization enabled
+✅ Rate limiting enabled
+✅ Security tests passing
+✅ Production-ready documentation complete

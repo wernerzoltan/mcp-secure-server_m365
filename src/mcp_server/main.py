@@ -7,11 +7,10 @@ def create_server() -> MCPServer:
     """
 
     # Initialize the MCP server instance with the specified name
-    server = MCPServer(
+    return MCPServer(
         name="mcp-secure-server"
     )
 
-    return server
 
 # Run the server if this script is executed directly
 if __name__ == "__main__":
