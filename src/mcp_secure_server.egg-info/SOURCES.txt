@@ -1,0 +1,9 @@
+pyproject.toml
+src/mcp_secure_server.egg-info/PKG-INFO
+src/mcp_secure_server.egg-info/SOURCES.txt
+src/mcp_secure_server.egg-info/dependency_links.txt
+src/mcp_secure_server.egg-info/requires.txt
+src/mcp_secure_server.egg-info/top_level.txt
+src/mcp_server/__init__.py
+src/mcp_server/main.py
+tests/test_server_creation.py
