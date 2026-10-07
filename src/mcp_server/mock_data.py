@@ -10,7 +10,7 @@ No external systems involved.
 def get_spaces() -> list:
 
     # This simulates what will eventually come from Confluence.
-    # Later we want: confluence://spaces
+    # Later we want: confluence://spaces to return data.
     return [
         {
             "id": "1",
