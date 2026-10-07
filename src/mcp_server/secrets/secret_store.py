@@ -68,3 +68,14 @@ class SecretStore(ABC):
             False otherwise
         """
         raise NotImplementedError
+
+    @abstractmethod
+    async def set_secret(
+        self,
+        secret_name: str,
+        secret_value: str,
+    ) -> None:
+        """
+        Create or update a secret.
+        """
+        raise NotImplementedError
