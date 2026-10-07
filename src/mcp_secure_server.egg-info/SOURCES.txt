@@ -6,4 +6,9 @@ src/mcp_secure_server.egg-info/requires.txt
 src/mcp_secure_server.egg-info/top_level.txt
 src/mcp_server/__init__.py
 src/mcp_server/main.py
+src/mcp_server/mock_data.py
+src/mcp_server/resources.py
+tests/test_mock_data.py
+tests/test_resources.py
 tests/test_server_creation.py
+tests/test_spaces_resource.py
