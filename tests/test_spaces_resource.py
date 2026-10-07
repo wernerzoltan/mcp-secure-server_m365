@@ -1,4 +1,4 @@
-from mcp_server.resources import read_spaces_resource
+from mcp_server.resources.spaces import read_spaces_resource
 
 # Test cases for the Confluence spaces resource
 def test_resource_returns_spaces():

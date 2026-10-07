@@ -1,4 +1,4 @@
-from mcp_server.mock_data import get_spaces
+from mcp_server.data.mock_data import get_spaces
 
 # Tests for the mock Confluence data functions
 def test_get_spaces_returns_list():

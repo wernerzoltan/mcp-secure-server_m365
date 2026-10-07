@@ -1,4 +1,4 @@
-from mcp_server.mock_data import get_spaces
+from mcp_server.data.mock_data import get_spaces
 # Why This File Exists
 # We deliberately do not put resource logic in main.py
 # Keeping resource logic isolated from server startup.

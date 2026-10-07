@@ -1,6 +1,6 @@
 from unittest import result
 
-from mcp_server.resources import read_spaces_resource
+from mcp_server.resources.spaces import read_spaces_resource
 
 # Tests for the read_spaces_resource function in mcp_server.resources
 def test_spaces_resource_returns_list():

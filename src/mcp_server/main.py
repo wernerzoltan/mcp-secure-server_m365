@@ -1,5 +1,5 @@
 from mcp.server.mcpserver import MCPServer
-from mcp_server.resources import read_spaces_resource
+from mcp_server.resources.spaces import read_spaces_resource
 import sys
 
 # Main entry point for the MCP secure server application
