@@ -1,19 +1,21 @@
 import logging
 
-"""
-Creates a centralized logging configuration.
-Later every component will automatically follow the same logging standard.
-Example output:
-    2024-06-05 12:34:56 | INFO | my_module | This is an info message
+from mcp_server.config import settings
 
-"""
+
 def configure_logging() -> None:
     """
     Configure application logging.
     """
 
+    log_level = getattr(
+        logging,
+        settings.log_level.upper(),
+        logging.INFO,
+    )
+
     logging.basicConfig(
-        level=logging.INFO,
+        level=log_level,
         format=(
             "%(asctime)s | "
             "%(levelname)s | "
@@ -23,7 +25,9 @@ def configure_logging() -> None:
     )
 
 
-def get_logger(name: str) -> logging.Logger:
+def get_logger(
+    name: str,
+) -> logging.Logger:
     """
     Return logger instance.
     """
