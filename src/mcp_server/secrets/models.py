@@ -2,16 +2,16 @@
 Secret record model.
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 
-@dataclass
+@dataclass(frozen=True)
 class SecretRecord:
     """
     Represents a stored secret.
     """
 
-    value: str
+    value: str = field(repr=False)
     version: int
 
 @dataclass

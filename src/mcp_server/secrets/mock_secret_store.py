@@ -6,7 +6,7 @@ from mcp_server.secrets.models import (
     SecretMetadata,
     SecretRecord,
 )
-
+import logging
 
 
 class MockSecretStore(SecretStore):
@@ -19,6 +19,9 @@ class MockSecretStore(SecretStore):
     """
 
     def __init__(self) -> None:
+        self._logger = logging.getLogger(__name__)
+        self._current_secrets: dict[str, SecretRecord] = {}
+        self._history: dict[str, list[SecretRecord]] = {}
         self._secrets: dict[
             str,
             list[SecretRecord]
@@ -158,17 +161,25 @@ class MockSecretStore(SecretStore):
         secret_name: str,
     ) -> list[SecretRecord]:
         """
-        Return all versions.
+        Return the complete version history of a secret.
+
+        Returns a defensive copy so callers cannot
+        modify the store's internal state.
         """
+
+        self._logger.debug(
+            "Retrieving history for secret '%s'",
+            secret_name,
+        )
 
         if secret_name not in self._secrets:
             raise KeyError(
                 f"Secret not found: {secret_name}"
             )
 
-        return self._secrets[
-            secret_name
-        ]
+        return list(
+            self._secrets[secret_name]
+        )
 
     async def rotate_secret(
         self,
