@@ -1,5 +1,6 @@
 from mcp.server.mcpserver import MCPServer
 from mcp_server.resources import read_spaces_resource
+import sys
 
 # Main entry point for the MCP secure server application
 def create_server() -> MCPServer:
@@ -30,10 +31,15 @@ def create_server() -> MCPServer:
 #    ...
 #]
 
+# Main function to create and run the MCP server
+# For stdio communication the server must run as a server process.
+def main() -> None:
+    server = create_server()
+    # proves the MCP server itself works.
+    server.run()
+
 
 # Run the server if this script is executed directly
 if __name__ == "__main__":
-    server = create_server()
-
-    print("MCP Server created successfully")
-    print(f"Server name: {server.name}")
+    print("Starting MCP server...", file=sys.stderr)
+    main()
