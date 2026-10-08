@@ -12,6 +12,12 @@ It defines the four MCP Resources planned in the project roadmap.
 from abc import ABC
 from abc import abstractmethod
 
+from mcp_server.confluence.models import (
+    Page,
+    SearchResult,
+    Space,
+)
+
 
 class ConfluenceClient(ABC):
     """
@@ -26,7 +32,7 @@ class ConfluenceClient(ABC):
     @abstractmethod
     async def get_spaces(
         self,
-    ) -> list[dict]:
+    ) -> list[Space]:
         """
         Return Confluence spaces.
         """
@@ -36,7 +42,7 @@ class ConfluenceClient(ABC):
     async def get_pages(
         self,
         space_key: str,
-    ) -> list[dict]:
+    ) -> list[Page]:
         """
         Return pages from a space.
         """
@@ -46,7 +52,7 @@ class ConfluenceClient(ABC):
     async def get_page(
         self,
         page_id: str,
-    ) -> dict:
+    ) -> Page:
         """
         Return a single page.
         """
@@ -57,7 +63,7 @@ class ConfluenceClient(ABC):
         self,
         query: str,
         limit: int = 10,
-    ) -> list[dict]:
+    ) -> list[SearchResult]:
         """
         Search Confluence content.
         """
